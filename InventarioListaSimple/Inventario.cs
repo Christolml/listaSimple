@@ -10,7 +10,6 @@ namespace InventarioListaSimple
 {
     class Inventario
     {
-        bool aviso;
         private Producto Primero;
         private Producto Ultimo;
 
@@ -21,35 +20,37 @@ namespace InventarioListaSimple
         }
 
 
-
-        public void agregarProducto(Producto producto)
+        /// <summary>
+        /// Recibe el producto y lo agrega usando recursividad cuando se tiene mas de un producto en la lista
+        /// </summary>
+        /// <param name="nuevo"></param>
+        public void agregarProducto(Producto nuevo)
         {
-            Producto Nuevo = producto;
-
-            if(buscarInicio(producto.codigo) == false)     //cuando es false quiere decir que no hay aun ese codigo y lo deja agregar a la lista
+            if (buscarInicio(nuevo.codigo) == false)     //cuando es false quiere decir que no hay aun ese codigo y lo deja agregar a la lista
             {
                 if (Primero == null)
-                {
-                    Primero = producto;
-                    Primero.Siguiente = null;
-                    Ultimo = Nuevo;
-                }
+                    Primero = nuevo;
                 else
-                {
-                    Ultimo.Siguiente = Nuevo;
-                    Nuevo.Siguiente = null;
-                    Ultimo = Nuevo;
-                }
+                    agregarProducto(Primero, nuevo);
             }
 
         }
 
 
+        private void agregarProducto(Producto ultimo, Producto nuevo)
+        {
+            if (ultimo.Siguiente == null)
+                ultimo.Siguiente = nuevo;
+            else
+                agregarProducto(ultimo.Siguiente, nuevo);
+
+        }
+
         public bool buscarInicio(int codigo)
         {
             bool mostrar = false;
-            Producto Actual = Primero;   
-            bool encontrado = false;          
+            Producto Actual = Primero;
+            bool encontrado = false;
 
             while (Actual != null && encontrado != true)
             {
@@ -63,14 +64,14 @@ namespace InventarioListaSimple
 
             return mostrar;
         }
-        
+
         public Producto buscarProducto(int codigo)
         {
-            Producto mostrar =null;
+            Producto mostrar = null;
             Producto Actual = Primero;    //aqui indico que el el producto actual empieza con el primer elemento que tengo, me sirve para recorrer la lista
-            bool encontrado = false;            //sirve para indicarme cuando el codigo coincida con el que busco
+            bool encontrado = false;      //sirve para indicarme cuando el codigo coincida con el que busco
 
-            if (Primero != null)   //con este me dice que la lista si contiene algo dentro
+            if (Primero != null)          //con este me dice que la lista si contiene algo dentro
             {
                 while (Actual != null && encontrado != true)
                 {
@@ -99,23 +100,19 @@ namespace InventarioListaSimple
             Producto Actual = Primero;
             Producto temporal = null;
 
-            bool encontrado = false;          
+            bool encontrado = false;
 
-            // primero=100          ultimo=89           Actual=89           anterior=47         codigo=100      encontrado=false
-
-            //  listaSimple         56 -> 100 -> 47 -> 89 -> null
-
-            if (Primero != null)   
+            if (Primero != null)
             {
                 while (Actual != null && encontrado != true)
                 {
                     if (Actual.codigo == codigo)
                     {
-                        if(Actual == Primero)
+                        if (Actual == Primero)
                         {
                             Primero = Primero.Siguiente;
                         }
-                        else if(Actual == Ultimo)
+                        else if (Actual == Ultimo)
                         {
                             temporal.Siguiente = null;
                             Ultimo = temporal;
@@ -138,26 +135,39 @@ namespace InventarioListaSimple
         }
 
 
-        public bool insertar(Producto producto, int codigo)
+        public void insertar(Producto producto, int codigo)
         {
             Producto Actual = Primero;
+            Producto temporal = null;
 
-            Producto encontrado = buscarProducto(codigo);
+            bool encontrado = false;
 
-            //if (buscarProducto(producto.codigo) )
-            //{
-            //    while(Actual != null)
-            //    {
+            if (buscarInicio(producto.codigo) == false)     //cuando es false quiere decir que no hay aun ese codigo y lo deja agregar a la lista
+            {
 
-            //    }
+                if (Primero != null)
+                {
+                    while (Actual != null && encontrado != true)
+                    {
+                        temporal = Actual.Siguiente;
 
+                        if (Actual.codigo == codigo)
+                        {
+                            Actual.Siguiente = producto;
+                            producto.Siguiente = temporal;
+                            encontrado = true;
+                        }
+                        else
+                        {
+                            Actual = Actual.Siguiente;
+                        }
+                    }
 
-            //}
-            //else
-            //    aviso = false;
-            
+                }
+                else
+                    MessageBox.Show("Error, lista vacia");
 
-                return aviso;
+            }
         }
 
 
@@ -165,10 +175,10 @@ namespace InventarioListaSimple
         {
             string mostrar = "";
             Producto Actual = Primero;
-            
-            if(Primero != null)
+
+            if (Primero != null)
             {
-                while(Actual != null)
+                while (Actual != null)
                 {
                     mostrar += Actual.ToString() + "\r\n";
                     Actual = Actual.Siguiente;
@@ -176,7 +186,7 @@ namespace InventarioListaSimple
             }
             else
                 mostrar = "La lista no contiene elementos disponibles";
-            
+
             return mostrar;
         }
 

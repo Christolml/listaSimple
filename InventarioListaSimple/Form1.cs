@@ -23,7 +23,6 @@ namespace InventarioListaSimple
         {
             bool agregado = inventario.buscarInicio(Convert.ToInt16(txtCodigo.Text));
             Producto producto = new Producto(Convert.ToInt16(txtCodigo.Text), txtNombre.Text, Convert.ToInt16(txtCantidad.Text), Convert.ToInt16(txtPrecio.Text));
-
             inventario.agregarProducto(producto);
 
             if (agregado == false)
@@ -59,6 +58,7 @@ namespace InventarioListaSimple
         {
             inventario.eliminarProducto(Convert.ToInt16(txtCodigoConsulta.Text));
             txtReporte.Text = "";
+            MessageBox.Show("Producto eliminado");
         }
 
         private void btnSalir_Click(object sender, EventArgs e)
@@ -67,5 +67,23 @@ namespace InventarioListaSimple
         }
 
 
+        private void btnInsertar_Click_1(object sender, EventArgs e)
+        {
+            bool agregado = inventario.buscarInicio(Convert.ToInt16(txtCodigo.Text));
+
+            Producto producto = new Producto(Convert.ToInt16(txtCodigo.Text), txtNombre.Text, Convert.ToInt16(txtCantidad.Text), Convert.ToInt16(txtPrecio.Text));
+            inventario.insertar(producto, Convert.ToInt16(txtPos.Text));
+
+            if (agregado == false)
+            {
+                MessageBox.Show("Producto insertado");
+                txtReporte.Text = producto.ToString();
+            }
+            else
+            {
+                MessageBox.Show("Ese código ya existe");
+                txtReporte.Text = "";
+            }
+        }
     }
 }
